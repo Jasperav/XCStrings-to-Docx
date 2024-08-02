@@ -1,0 +1,120 @@
+{
+  "strings": {
+    "normal_0": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "value": "normal",
+            "state": "translated"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "value": "updated",
+            "state": "translated"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "value": "n0",
+            "state": "translated"
+          }
+        }
+      }
+    },
+    "normal_1": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "value": "normal",
+            "state": "translated"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "value": "JmR",
+            "state": "translated"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "value": "n1",
+            "state": "translated"
+          }
+        }
+      }
+    },
+    "plurals": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "value": "%1$lld single",
+                  "state": "translated"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "value": "%1$lld multiple",
+                  "state": "translated"
+                }
+              }
+            }
+          }
+        },
+        "nl": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "value": "%1$lld eentje",
+                  "state": "translated"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "value": "%1$lld sdsad",
+                  "state": "translated"
+                }
+              }
+            }
+          }
+        },
+        "pl": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "value": "s",
+                  "state": "translated"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "value": "o",
+                  "state": "translated"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "value": "m",
+                  "state": "translated"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "value": "f",
+                  "state": "translated"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0",
+  "sourceLanguage": "en"
+}
