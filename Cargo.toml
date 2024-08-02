@@ -1,11 +1,19 @@
 [package]
 name = "xcstringsdocx"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
+description = "Converts a .xcstrings file to .docx file for supported languages"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-swift_localizable_json_parser = "0.1.6"
-anyhow = "1.0"
+swift_localizable_json_parser = "0.1.40"
 docx-rust = "0.1.8"
+serde_json = "1"
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0.204", features = ["derive"] }
+log = "0.4"
+env_logger = "0.11"
+embed_plist = "1.2"
+serde-json-fmt = "0.1.0"

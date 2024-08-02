@@ -1,1 +1,8 @@
 /target
+/generated
+/.idea
+**/.DS_Store
+xcstringstodocx
+/resources/values
+/resources/values-nl
+/resources/values-pl

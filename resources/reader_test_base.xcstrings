@@ -1,0 +1,112 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+      "Inlined no translation % weird charss:": {
+
+      },
+      "Inlined with an actual translation": {
+        "comment": "some random comment",
+        "localizations" : {
+          "nl" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "Ingelijnd"
+            }
+          }
+        }
+      },
+        "Inlined\nwith \n\n newlines": {
+          "localizations" : {
+            "nl" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "Ingelijnd\nmet \n\n newlines"
+              }
+            }
+          }
+        },
+       "Inlined with an inlined  base language": {
+        "localizations" : {
+            "en" : {
+              "stringUnit" : {
+                "state" : "new",
+                "value" : "Keys to localize: %1$lld (%2$lld%%)"
+              }
+            }
+          }
+      },
+    "normal_0" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normal"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normaal"
+          }
+        }
+      }
+    },
+    "normal_1" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normal"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "plurals" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld single"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld multiple"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld eentje"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : ""
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
