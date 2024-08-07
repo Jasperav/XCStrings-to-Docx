@@ -1,31 +1,32 @@
 use crate::xcstrings_metadata::config::Config;
 use serde::Serialize;
+use std::path::PathBuf;
 use swift_localizable_json_parser::types::output::Translation;
 
 #[derive(Debug, Clone, Serialize)]
-struct Export {
+pub struct Export {
     pub language_code: String,
     pub word_count: usize,
-    pub localized: i32,
-    pub not_localized: i32,
+    pub localized_keys: i32,
+    pub not_localized_keys: i32,
 }
 
-pub fn read(config: Config) -> anyhow::Result<()> {
-    let loc_per_lang = swift_localizable_json_parser::parse_from_dir(&config.path_to_xcstrings)
+pub fn extract(path_to_xcstrings: &PathBuf) -> Vec<Export> {
+    let loc_per_lang = swift_localizable_json_parser::parse_from_dir(path_to_xcstrings)
         .localizable
         .localized_per_language();
     let mut export = vec![];
 
     for (language, loc) in loc_per_lang.language_localized {
-        let mut localized = 0;
-        let mut not_localized = 0;
+        let mut localized_keys = 0;
+        let mut not_localized_keys = 0;
 
         macro_rules! update_localize_stats {
             ($string_unit: expr) => {
                 if $string_unit.state == "translated" {
-                    localized += 1;
+                    localized_keys += 1;
                 } else {
-                    not_localized += 1;
+                    not_localized_keys += 1;
                 }
             };
         }
@@ -46,10 +47,16 @@ pub fn read(config: Config) -> anyhow::Result<()> {
         export.push(Export {
             language_code: language,
             word_count: loc.word_count,
-            localized,
-            not_localized,
+            localized_keys,
+            not_localized_keys,
         });
     }
+
+    export
+}
+
+pub fn read(config: Config) -> anyhow::Result<()> {
+    let export = extract(&config.path_to_xcstrings);
 
     // Should never fail
     let transformed = serde_json::to_string(&export).unwrap();

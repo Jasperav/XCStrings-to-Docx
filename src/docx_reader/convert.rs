@@ -5,19 +5,13 @@ use docx_rust::document::{
 };
 use std::default::Default;
 
+use crate::docx_reader::docx_extractor::extract;
 use std::process::exit;
 use swift_localizable_json_parser::types::inoutoutput::StringUnitContainer;
 use swift_localizable_json_parser::types::input::{Translation, TranslationTypeContainer};
 use swift_localizable_json_parser::types::output::PluralVariate;
 
 pub fn read(config: Config) {
-    macro_rules! exit_with_log {
-        ($log: expr) => {
-            eprintln!("{}", $log);
-            exit(1)
-        };
-    }
-
     if config.base_xcstrings.exists() {
         println!(
             "xcstrings file exists at path: {:#?}",
@@ -49,104 +43,21 @@ pub fn read(config: Config) {
         }
     };
 
-    if config.extract_from_docx.exists() {
-        println!("docx file exists...");
-    } else {
-        exit_with_log!("docx file does not exists");
-    }
-
-    let docxfile = match docx_rust::DocxFile::from_file(&config.extract_from_docx) {
-        Ok(ok) => {
-            println!("Read docx file successfully");
-
-            ok
-        }
-        Err(err) => {
-            exit_with_log!(format!("Got error while reading docx file: {:#?}", err));
-        }
-    };
-    let parsed = match docxfile.parse() {
-        Ok(ok) => {
-            println!("Parsed docx file successfully");
-
-            ok
-        }
-        Err(err) => {
-            exit_with_log!(format!("Got error while parsing docx file: {:#?}", err));
-        }
-    };
-    let tables = parsed
-        .document
-        .body
-        .content
-        .iter()
-        .filter_map(|c| match c {
-            BodyContent::Table(t) => Some(t),
-            _ => None,
-        })
-        .collect::<Vec<_>>();
-
-    assert_eq!(1, tables.len());
-
-    let table = tables[0];
-    let mut index_key = None;
-    let mut index_variation = None;
-    let mut language_code = None;
-    let index_translated = table.rows[0].cells.len() - 1;
-
-    for (index, header) in table.rows[0].cells.iter().enumerate() {
-        let text = extract_text_from_table_row_content(header);
-
-        // For some reason, matching does not work
-        if text.as_str() == KEY_KEY {
-            index_key = Some(index);
-        } else if text.as_str() == KEY_VARIATION {
-            index_variation = Some(index);
-        }
-
-        if index == index_translated {
-            language_code = Some(text.to_string());
-        }
-    }
-
-    let index_key = match index_key {
-        None => {
-            exit_with_log!("There is no key column");
-        }
-        Some(index) => index,
-    };
-    let index_variation = match index_variation {
-        None => {
-            exit_with_log!("There is no variation column");
-        }
-        Some(index) => index,
-    };
-    let language_code = match language_code {
-        None => {
-            exit_with_log!(
-                "There is no language code to translate from, this should be the last column"
-            );
-        }
-        Some(language_code) => language_code,
-    };
     let mut amount_keys_to_translate = 0;
 
-    for row in table.rows.iter().skip(1) {
-        let key = extract_text_from_table_row_content(&row.cells[index_key]);
-        let variation = PluralVariate::from_android_key(&extract_text_from_table_row_content(
-            &row.cells[index_variation],
-        ));
-        let translated = extract_text_from_table_row_content(&row.cells[index_translated]);
-        let language = match translation.strings.get_mut(&key) {
+    let extracted = extract(&config.extract_from_docx);
+
+    for extract in extracted.extracted {
+        let language = match translation.strings.get_mut(&extract.key) {
             None => {
-                exit_with_log!(format!("There is no matching key for: {key}"));
+                exit_with_log!(format!("There is no matching key for: {}", extract.key));
             }
             Some(v) => v,
         };
 
         macro_rules! update_string_unit_container {
             ($string_unit: expr) => {
-                let translated = translated.trim();
+                let translated = extract.translated.trim();
 
                 $string_unit.string_unit.state = if translated.is_empty() {
                     "new".to_string()
@@ -159,28 +70,28 @@ pub fn read(config: Config) {
             };
         }
 
-        let default_translation_type_container = if variation.is_some() {
+        let default_translation_type_container = if extract.variation.is_some() {
             TranslationTypeContainer::Variation(Default::default())
         } else {
             TranslationTypeContainer::StringUnit(Default::default())
         };
         let container_to_work_on = language
             .localizations
-            .entry(language_code.clone())
+            .entry(extracted.language_code.clone())
             .or_insert(default_translation_type_container);
 
         match container_to_work_on {
             TranslationTypeContainer::StringUnit(su) => {
-                if variation.is_some() {
-                    exit_with_log!(format!("Expected no variation for key: {}", key));
+                if extract.variation.is_some() {
+                    exit_with_log!(format!("Expected no variation for key: {}", extract.key));
                 }
 
                 update_string_unit_container!(su);
             }
             TranslationTypeContainer::Variation(v) => {
-                let variation = match variation {
+                let variation = match extract.variation {
                     None => {
-                        exit_with_log!(format!("Expected variation for key: {}", key));
+                        exit_with_log!(format!("Expected variation for key: {}", extract.key));
                     }
                     Some(v) => v,
                 };
@@ -224,7 +135,7 @@ pub fn read(config: Config) {
     }
 }
 
-fn extract_text_from_table_row_content(table_row_content: &TableRowContent) -> String {
+pub fn extract_text_from_table_row_content(table_row_content: &TableRowContent) -> String {
     let tc = match table_row_content {
         TableRowContent::TableCell(tc) => tc,
         _ => panic!(),

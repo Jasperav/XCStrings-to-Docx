@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 use std::process::exit;
+use xcstringsdocx::exit_with_log;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -19,30 +20,28 @@ fn main() {
                     println!("Successfully wrote the docx file")
                 }
                 Err(err) => {
-                    eprintln!("Error while writing docx file: {:#?}", err);
-
-                    exit(1)
+                    exit_with_log!(format!("Error while writing docx file: {:#?}", err));
                 }
             }
         }
-        ConfigContainer::Metadata(m) => {
+        ConfigContainer::XCStringsMetadata(m) => {
             match xcstringsdocx::xcstrings_metadata::read::read(m) {
                 Ok(_) => {
                     // Don't do anything
                 }
                 Err(err) => {
-                    eprintln!("Error while writing docx file: {:#?}", err);
-
-                    exit(1)
+                    exit_with_log!(format!("Error while writing docx file: {:#?}", err));
                 }
             }
         }
+        ConfigContainer::DocxMetadata(d) => xcstringsdocx::docx_metadata::read::read(d),
     }
 }
 
 #[derive(Subcommand, Clone, Debug)]
 enum ConfigContainer {
-    Metadata(xcstringsdocx::xcstrings_metadata::config::Config),
+    DocxMetadata(xcstringsdocx::docx_metadata::config::Config),
+    XCStringsMetadata(xcstringsdocx::xcstrings_metadata::config::Config),
     Read(xcstringsdocx::docx_reader::config::Config),
     Write(xcstringsdocx::docx_writer::config::Config),
 }
