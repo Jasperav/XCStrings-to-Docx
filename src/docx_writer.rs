@@ -47,6 +47,7 @@ pub fn convert(localizable: ParsedResult, config: Config) -> Result<()> {
     for language_to_write in languages_to_write_docx_files {
         println!("Writing language: {language_to_write}");
 
+        let mut amount_keys_to_translate = 0;
         let table_border_style = BorderStyle::Single;
         let table_border_size = 4isize;
         let mut table_borders = TableBorders::default()
@@ -121,6 +122,8 @@ pub fn convert(localizable: ParsedResult, config: Config) -> Result<()> {
                     .push_cell(Paragraph::default().push_text(value));
 
                 table = table.push_row(new_table_row);
+
+                amount_keys_to_translate += 1;
             }};
         }
 
@@ -197,6 +200,10 @@ pub fn convert(localizable: ParsedResult, config: Config) -> Result<()> {
         docx.document.push(table);
         docx.write_file(config.save_in.join(format!("{}.docx", language_to_write)))
             .map_err(|f| anyhow::Error::msg(format!("{:#?}", f)))?;
+
+        println!(
+            "Exported {amount_keys_to_translate} translations for language: {language_to_write}"
+        );
     }
 
     Ok(())

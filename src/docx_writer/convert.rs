@@ -37,7 +37,6 @@ pub fn write_generated_docxs() -> std::path::PathBuf {
 
 #[cfg(test)]
 mod test {
-
     use crate::docx_writer::convert::write_generated_docxs;
 
     #[test]

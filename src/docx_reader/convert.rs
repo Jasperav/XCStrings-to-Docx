@@ -129,6 +129,7 @@ pub fn read(config: Config) {
         }
         Some(language_code) => language_code,
     };
+    let mut amount_keys_to_translate = 0;
 
     for row in table.rows.iter().skip(1) {
         let key = extract_text_from_table_row_content(&row.cells[index_key]);
@@ -147,8 +148,14 @@ pub fn read(config: Config) {
             ($string_unit: expr) => {
                 let translated = translated.trim();
 
-                $string_unit.string_unit.state = if translated.is_empty() { "new".to_string() } else { "translated".to_string() };
+                $string_unit.string_unit.state = if translated.is_empty() {
+                    "new".to_string()
+                } else {
+                    "translated".to_string()
+                };
                 $string_unit.string_unit.value = translated.to_string();
+
+                amount_keys_to_translate += 1;
             };
         }
 
@@ -195,7 +202,7 @@ pub fn read(config: Config) {
     }
 
     println!(
-        "Successfully updated Localized file, trying to write it back to: {:#?}",
+        "Successfully updated Localized file with {amount_keys_to_translate} translated keys, trying to write it back to: {:#?}",
         config.updated_xcstrings
     );
 
