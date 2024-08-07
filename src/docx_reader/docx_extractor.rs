@@ -23,7 +23,7 @@ pub fn extract(extract_from_docx: &PathBuf) -> ExtractContainer {
         exit_with_log!("docx file does not exists");
     }
 
-    let docxfile = match docx_rust::DocxFile::from_file(&extract_from_docx) {
+    let docxfile = match docx_rust::DocxFile::from_file(extract_from_docx) {
         Ok(ok) => {
             println!("Read docx file successfully");
 

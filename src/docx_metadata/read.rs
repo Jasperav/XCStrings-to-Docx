@@ -12,15 +12,10 @@ pub struct Export {
 pub fn read(config: Config) {
     let extracted = extract(&config.extract_from_docx);
     let total_keys_to_translate = if let Some(xcstrings) = &config.base_xcstrings {
-        // This should always succeed
-        if let Some(export) = super::super::xcstrings_metadata::read::extract(xcstrings)
+        // This should always exist though
+        super::super::xcstrings_metadata::read::extract(xcstrings)
             .iter()
-            .find(|e| e.language_code == extracted.language_code)
-        {
-            Some(export.localized_keys + export.not_localized_keys)
-        } else {
-            None
-        }
+            .find(|e| e.language_code == extracted.language_code).map(|export| export.localized_keys + export.not_localized_keys)
     } else {
         None
     };

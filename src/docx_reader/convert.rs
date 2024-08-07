@@ -1,7 +1,7 @@
 use crate::docx_reader::config::Config;
-use crate::{KEY_KEY, KEY_VARIATION};
+
 use docx_rust::document::{
-    BodyContent, ParagraphContent, RunContent, TableCellContent, TableRowContent,
+    ParagraphContent, RunContent, TableCellContent, TableRowContent,
 };
 use std::default::Default;
 
