@@ -25,11 +25,24 @@ fn main() {
                 }
             }
         }
+        ConfigContainer::Metadata(m) => {
+            match xcstringsdocx::xcstrings_metadata::read::read(m) {
+                Ok(_) => {
+                    // Don't do anything
+                }
+                Err(err) => {
+                    eprintln!("Error while writing docx file: {:#?}", err);
+
+                    exit(1)
+                }
+            }
+        }
     }
 }
 
 #[derive(Subcommand, Clone, Debug)]
 enum ConfigContainer {
+    Metadata(xcstringsdocx::xcstrings_metadata::config::Config),
     Read(xcstringsdocx::docx_reader::config::Config),
     Write(xcstringsdocx::docx_writer::config::Config),
 }

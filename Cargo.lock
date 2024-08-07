@@ -622,6 +622,7 @@ dependencies = [
  "anyhow",
  "clap",
  "docx-rust",
+ "serde",
  "serde_json",
  "swift_localizable_json_parser",
 ]

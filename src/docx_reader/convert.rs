@@ -264,7 +264,7 @@ mod test {
 
     #[test]
     fn test_read() {
-        let _path = crate::docx_writer::convert::write_generated_docxs();
+        let _ = crate::docx_writer::convert::write_generated_docxs();
         let resources = current_dir().unwrap().join("resources");
         let xcstrings = resources.join("reader_test_base.xcstrings");
         let xcstrings_updated = resources.join("reader_test_updated.xcstrings");

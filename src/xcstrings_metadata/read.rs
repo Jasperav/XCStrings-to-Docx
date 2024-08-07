@@ -1,0 +1,77 @@
+use crate::xcstrings_metadata::config::Config;
+use serde::Serialize;
+use swift_localizable_json_parser::types::output::Translation;
+
+#[derive(Debug, Clone, Serialize)]
+struct Export {
+    pub language_code: String,
+    pub word_count: usize,
+    pub localized: i32,
+    pub not_localized: i32,
+}
+
+pub fn read(config: Config) -> anyhow::Result<()> {
+    let loc_per_lang = swift_localizable_json_parser::parse_from_dir(&config.path_to_xcstrings)
+        .localizable
+        .localized_per_language();
+    let mut export = vec![];
+
+    for (language, loc) in loc_per_lang.language_localized {
+        let mut localized = 0;
+        let mut not_localized = 0;
+
+        macro_rules! update_localize_stats {
+            ($string_unit: expr) => {
+                if $string_unit.state == "translated" {
+                    localized += 1;
+                } else {
+                    not_localized += 1;
+                }
+            };
+        }
+
+        for single_loc in &loc.translations {
+            match &single_loc.translation {
+                Translation::Localization(l) => {
+                    update_localize_stats!(l)
+                }
+                Translation::PluralVariation(pv) => {
+                    for pv in pv {
+                        update_localize_stats!(pv.translation_value);
+                    }
+                }
+            }
+        }
+
+        export.push(Export {
+            language_code: language,
+            word_count: loc.word_count,
+            localized,
+            not_localized,
+        });
+    }
+
+    // Should never fail
+    let transformed = serde_json::to_string(&export).unwrap();
+
+    println!("Exported result: {transformed}");
+
+    Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use crate::xcstrings_metadata::config::Config;
+    use std::env::current_dir;
+
+    #[test]
+    fn test_read() {
+        super::read(Config {
+            path_to_xcstrings: current_dir()
+                .unwrap()
+                .join("resources")
+                .join("reader_test_base.xcstrings"),
+        })
+        .unwrap();
+    }
+}
