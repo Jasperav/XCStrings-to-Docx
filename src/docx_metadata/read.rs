@@ -15,7 +15,8 @@ pub fn read(config: Config) {
         // This should always exist though
         super::super::xcstrings_metadata::read::extract(xcstrings)
             .iter()
-            .find(|e| e.language_code == extracted.language_code).map(|export| export.localized_keys + export.not_localized_keys)
+            .find(|e| e.language_code == extracted.language_code)
+            .map(|export| export.localized_keys + export.not_localized_keys)
     } else {
         None
     };

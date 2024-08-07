@@ -1,8 +1,6 @@
 use crate::docx_reader::config::Config;
 
-use docx_rust::document::{
-    ParagraphContent, RunContent, TableCellContent, TableRowContent,
-};
+use docx_rust::document::{ParagraphContent, RunContent, TableCellContent, TableRowContent};
 use std::default::Default;
 
 use crate::docx_reader::docx_extractor::extract;
