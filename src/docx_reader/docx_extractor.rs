@@ -4,6 +4,7 @@ use docx_rust::document::BodyContent;
 use std::path::PathBuf;
 use std::process::exit;
 use swift_localizable_json_parser::types::output::PluralVariate;
+use crate::error::ConvertError;
 
 pub struct ExtractContainer {
     pub(crate) language_code: String,
@@ -16,16 +17,16 @@ pub(crate) struct Extract {
     pub(crate) translated: String,
 }
 
-pub fn extract(extract_from_docx: &PathBuf) -> ExtractContainer {
+pub fn extract(extract_from_docx: &PathBuf) -> Result<ExtractContainer, ConvertError> {
     if extract_from_docx.exists() {
-        println!("docx file exists...");
+        log::debug!("docx file exists...");
     } else {
         exit_with_log!("docx file does not exists");
     }
 
     let docxfile = match docx_rust::DocxFile::from_file(extract_from_docx) {
         Ok(ok) => {
-            println!("Read docx file successfully");
+            log::debug!("Read docx file successfully");
 
             ok
         }
@@ -35,7 +36,7 @@ pub fn extract(extract_from_docx: &PathBuf) -> ExtractContainer {
     };
     let parsed = match docxfile.parse() {
         Ok(ok) => {
-            println!("Parsed docx file successfully");
+            log::debug!("Parsed docx file successfully");
 
             ok
         }
@@ -115,8 +116,8 @@ pub fn extract(extract_from_docx: &PathBuf) -> ExtractContainer {
         });
     }
 
-    ExtractContainer {
+    Ok(ExtractContainer {
         language_code,
         extracted,
-    }
+    })
 }

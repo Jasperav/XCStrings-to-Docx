@@ -1,5 +1,14 @@
+use std::error::Error;
+use std::fmt::{Display, Formatter};
+use std::panic;
 use clap::{Parser, Subcommand};
 use std::process::exit;
+use std::string::FromUtf8Error;
+use serde::Serialize;
+use serde_json::Value;
+use swift_localizable_json_parser::types::output::ParsedError;
+use xcstringsdocx::docx_reader::convert::Export;
+use xcstringsdocx::error::ConvertError;
 use xcstringsdocx::exit_with_log;
 
 #[derive(Parser, Debug)]
@@ -12,30 +21,25 @@ struct Cli {
 fn main() {
     let cli = Cli::parse();
 
-    match cli.command {
-        ConfigContainer::Read(r) => xcstringsdocx::docx_reader::convert::read(r),
-        ConfigContainer::Write(w) => {
-            match xcstringsdocx::docx_writer::convert::convert_from_path(w) {
-                Ok(_) => {
-                    println!("Successfully wrote the docx file")
-                }
-                Err(err) => {
-                    exit_with_log!(format!("Error while writing docx file: {:#?}", err));
-                }
-            }
-        }
-        ConfigContainer::XCStringsMetadata(m) => {
-            match xcstringsdocx::xcstrings_metadata::read::read(m) {
-                Ok(_) => {
-                    // Don't do anything
-                }
-                Err(err) => {
-                    exit_with_log!(format!("Error while writing docx file: {:#?}", err));
+    macro_rules! handle_result {
+        ($result: expr) => {{
+            match serde_json::to_string(&$result.map_err(|e| e.to_string())) {
+                Ok(ok) => println!("{ok}"),
+                Err(e) => {
+                    eprint!("This is bad: {:#?}", e);
+
+                    exit(1)
                 }
             }
-        }
-        ConfigContainer::DocxMetadata(d) => xcstringsdocx::docx_metadata::read::read(d),
+        }};
     }
+
+    match cli.command {
+        ConfigContainer::Read(c) => handle_result!(xcstringsdocx::docx_reader::convert::read(c)),
+        ConfigContainer::Write(c) => handle_result!(xcstringsdocx::docx_writer::convert::convert_from_path(c)),
+        ConfigContainer::XCStringsMetadata(c) => handle_result!(xcstringsdocx::xcstrings_metadata::read::read(c)),
+        ConfigContainer::DocxMetadata(c) => handle_result!(xcstringsdocx::docx_metadata::read::read(c)),
+    };
 }
 
 #[derive(Subcommand, Clone, Debug)]

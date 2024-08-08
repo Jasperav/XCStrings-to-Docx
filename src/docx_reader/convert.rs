@@ -5,13 +5,20 @@ use std::default::Default;
 
 use crate::docx_reader::docx_extractor::extract;
 use std::process::exit;
+use serde::Serialize;
 use swift_localizable_json_parser::types::inoutoutput::StringUnitContainer;
 use swift_localizable_json_parser::types::input::{Translation, TranslationTypeContainer};
 use swift_localizable_json_parser::types::output::PluralVariate;
+use crate::error::ConvertError;
 
-pub fn read(config: Config) {
+#[derive(Clone, Debug, Serialize)]
+pub struct Export {
+    pub amount_keys_to_translate: i32,
+}
+
+pub fn read(config: Config) -> Result<Export, ConvertError> {
     if config.base_xcstrings.exists() {
-        println!(
+        log::debug!(
             "xcstrings file exists at path: {:#?}",
             config.base_xcstrings
         );
@@ -28,7 +35,7 @@ pub fn read(config: Config) {
                 exit_with_log!(format!("Got converting xcstrings file to JSON: {:#?}", err));
             }
             Ok(o) => {
-                println!("Converted xcstrings file correctly to JSON");
+                log::debug!("Converted xcstrings file correctly to JSON");
 
                 o
             }
@@ -42,8 +49,7 @@ pub fn read(config: Config) {
     };
 
     let mut amount_keys_to_translate = 0;
-
-    let extracted = extract(&config.extract_from_docx);
+    let extracted = extract(&config.extract_from_docx)?;
 
     for extract in extracted.extracted {
         let language = match translation.strings.get_mut(&extract.key) {
@@ -110,7 +116,7 @@ pub fn read(config: Config) {
         }
     }
 
-    println!(
+    log::debug!(
         "Successfully updated Localized file with {amount_keys_to_translate} translated keys, trying to write it back to: {:#?}",
         config.updated_xcstrings
     );
@@ -123,7 +129,7 @@ pub fn read(config: Config) {
     };
 
     match std::fs::write(config.updated_xcstrings, json) {
-        Ok(_) => println!("Successfully updated xcstrings file with translations"),
+        Ok(_) => log::debug!("Successfully updated xcstrings file with translations"),
         Err(err) => {
             exit_with_log!(format!(
                 "Error while updating the xcstrings file: {:#?}",
@@ -131,6 +137,10 @@ pub fn read(config: Config) {
             ));
         }
     }
+
+    Ok(Export {
+        amount_keys_to_translate,
+    })
 }
 
 pub fn extract_text_from_table_row_content(table_row_content: &TableRowContent) -> String {
