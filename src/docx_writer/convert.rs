@@ -1,6 +1,6 @@
-use serde::Serialize;
-use crate::docx_writer::{config};
+use crate::docx_writer::config;
 use crate::error::ConvertError;
+use serde::Serialize;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Export {
@@ -14,7 +14,10 @@ pub fn convert_from_path(config: config::Config) -> Result<Vec<Export>, ConvertE
     convert_from_raw(&read, config)
 }
 
-pub fn convert_from_raw(xcstrings: &[u8], config: config::Config) -> Result<Vec<Export>, ConvertError> {
+pub fn convert_from_raw(
+    xcstrings: &[u8],
+    config: config::Config,
+) -> Result<Vec<Export>, ConvertError> {
     let converted = convert(
         swift_localizable_json_parser::parse_from_bytes(xcstrings)?,
         config,
@@ -37,7 +40,10 @@ use crate::docx_writer::config::{Column, Config};
 use crate::{KEY_KEY, KEY_VARIATION};
 use swift_localizable_json_parser::types::output::{Parsed, Translation};
 
-pub fn convert(localizable: Parsed, config: Config) -> std::result::Result<Vec<Export>, ConvertError> {
+pub fn convert(
+    localizable: Parsed,
+    config: Config,
+) -> std::result::Result<Vec<Export>, ConvertError> {
     let localized_per_language = localizable.localizable.localized_per_language();
 
     if config.clean_dir_before_generating {
@@ -234,7 +240,6 @@ pub fn convert(localizable: Parsed, config: Config) -> std::result::Result<Vec<E
 
     Ok(exports)
 }
-
 
 #[cfg(debug_assertions)]
 pub fn write_generated_docxs() -> std::path::PathBuf {

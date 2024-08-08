@@ -1,15 +1,5 @@
-
-
-
 use clap::{Parser, Subcommand};
 use std::process::exit;
-
-
-
-
-
-
-
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -36,9 +26,15 @@ fn main() {
 
     match cli.command {
         ConfigContainer::Read(c) => handle_result!(xcstringsdocx::docx_reader::convert::read(c)),
-        ConfigContainer::Write(c) => handle_result!(xcstringsdocx::docx_writer::convert::convert_from_path(c)),
-        ConfigContainer::XCStringsMetadata(c) => handle_result!(xcstringsdocx::xcstrings_metadata::read::read(c)),
-        ConfigContainer::DocxMetadata(c) => handle_result!(xcstringsdocx::docx_metadata::read::read(c)),
+        ConfigContainer::Write(c) => {
+            handle_result!(xcstringsdocx::docx_writer::convert::convert_from_path(c))
+        }
+        ConfigContainer::XCStringsMetadata(c) => {
+            handle_result!(xcstringsdocx::xcstrings_metadata::read::read(c))
+        }
+        ConfigContainer::DocxMetadata(c) => {
+            handle_result!(xcstringsdocx::docx_metadata::read::read(c))
+        }
     };
 }
 

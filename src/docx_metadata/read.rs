@@ -1,7 +1,7 @@
 use crate::docx_metadata::config::Config;
 use crate::docx_reader::docx_extractor::extract;
-use serde::Serialize;
 use crate::error::ConvertError;
+use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Export {

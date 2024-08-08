@@ -1,8 +1,8 @@
+use crate::error::ConvertError;
 use crate::xcstrings_metadata::config::Config;
 use serde::Serialize;
 use std::path::PathBuf;
 use swift_localizable_json_parser::types::output::Translation;
-use crate::error::ConvertError;
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Export {

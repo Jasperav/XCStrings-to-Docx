@@ -1,6 +1,6 @@
+use docx_rust::DocxError;
 use std::error::Error;
 use std::fmt::{Display, Formatter};
-use docx_rust::DocxError;
 use swift_localizable_json_parser::types::output::ParsedError;
 
 #[derive(Debug, Clone)]
@@ -12,7 +12,9 @@ impl Display for ConvertError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             // Replace all newlines so it's always on 1 line
-            ConvertError::Wrapped(error) => write!(f, "Error occurred: {}", error.replace('\n', " ")),
+            ConvertError::Wrapped(error) => {
+                write!(f, "Error occurred: {}", error.replace('\n', " "))
+            }
         }
     }
 }

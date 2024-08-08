@@ -3,8 +3,8 @@ use crate::{KEY_KEY, KEY_VARIATION};
 use docx_rust::document::BodyContent;
 use std::path::PathBuf;
 
-use swift_localizable_json_parser::types::output::PluralVariate;
 use crate::error::ConvertError;
+use swift_localizable_json_parser::types::output::PluralVariate;
 
 pub struct ExtractContainer {
     pub(crate) language_code: String,

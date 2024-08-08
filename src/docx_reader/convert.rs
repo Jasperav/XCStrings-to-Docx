@@ -5,11 +5,11 @@ use std::default::Default;
 
 use crate::docx_reader::docx_extractor::extract;
 
+use crate::error::ConvertError;
 use serde::Serialize;
 use swift_localizable_json_parser::types::inoutoutput::StringUnitContainer;
 use swift_localizable_json_parser::types::input::{Translation, TranslationTypeContainer};
 use swift_localizable_json_parser::types::output::PluralVariate;
-use crate::error::ConvertError;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Export {
@@ -197,13 +197,15 @@ mod test {
             extract_from_docx: nl,
             base_xcstrings: xcstrings.clone(),
             updated_xcstrings: xcstrings_updated.clone(),
-        }).unwrap();
+        })
+        .unwrap();
 
         read(Config {
             extract_from_docx: pl,
             base_xcstrings: xcstrings_updated.clone(),
             updated_xcstrings: xcstrings_updated.clone(),
-        }).unwrap();
+        })
+        .unwrap();
 
         let updated = std::fs::read(&xcstrings_updated).unwrap();
 
