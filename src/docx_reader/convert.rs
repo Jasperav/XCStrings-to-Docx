@@ -4,7 +4,7 @@ use docx_rust::document::{ParagraphContent, RunContent, TableCellContent, TableR
 use std::default::Default;
 
 use crate::docx_reader::docx_extractor::extract;
-use std::process::exit;
+
 use serde::Serialize;
 use swift_localizable_json_parser::types::inoutoutput::StringUnitContainer;
 use swift_localizable_json_parser::types::input::{Translation, TranslationTypeContainer};
@@ -197,13 +197,13 @@ mod test {
             extract_from_docx: nl,
             base_xcstrings: xcstrings.clone(),
             updated_xcstrings: xcstrings_updated.clone(),
-        });
+        }).unwrap();
 
         read(Config {
             extract_from_docx: pl,
             base_xcstrings: xcstrings_updated.clone(),
             updated_xcstrings: xcstrings_updated.clone(),
-        });
+        }).unwrap();
 
         let updated = std::fs::read(&xcstrings_updated).unwrap();
 

@@ -12,7 +12,7 @@ impl Display for ConvertError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             // Replace all newlines so it's always on 1 line
-            ConvertError::Wrapped(error) => write!(f, "Error occurred: {}", error.replace("\n", " ")),
+            ConvertError::Wrapped(error) => write!(f, "Error occurred: {}", error.replace('\n', " ")),
         }
     }
 }

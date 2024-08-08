@@ -3,7 +3,7 @@ macro_rules! exit_with_log {
     ($log: expr) => {{
         log::error!("{}", $log);
 
-        return Err(crate::error::ConvertError::Wrapped($log.to_string()))
+        return Err($crate::error::ConvertError::Wrapped($log.to_string()))
     }};
 }
 

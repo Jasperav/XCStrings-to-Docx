@@ -1,5 +1,5 @@
 use serde::Serialize;
-use crate::docx_writer::{config, convert};
+use crate::docx_writer::{config};
 use crate::error::ConvertError;
 
 #[derive(Clone, Debug, Serialize)]
@@ -35,7 +35,7 @@ use std::collections::HashSet;
 
 use crate::docx_writer::config::{Column, Config};
 use crate::{KEY_KEY, KEY_VARIATION};
-use swift_localizable_json_parser::types::output::{Parsed, ParsedResult, Translation};
+use swift_localizable_json_parser::types::output::{Parsed, Translation};
 
 pub fn convert(localizable: Parsed, config: Config) -> std::result::Result<Vec<Export>, ConvertError> {
     let localized_per_language = localizable.localizable.localized_per_language();

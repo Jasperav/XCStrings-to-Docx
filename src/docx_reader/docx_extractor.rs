@@ -2,7 +2,7 @@ use crate::docx_reader::convert::extract_text_from_table_row_content;
 use crate::{KEY_KEY, KEY_VARIATION};
 use docx_rust::document::BodyContent;
 use std::path::PathBuf;
-use std::process::exit;
+
 use swift_localizable_json_parser::types::output::PluralVariate;
 use crate::error::ConvertError;
 
