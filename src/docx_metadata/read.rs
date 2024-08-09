@@ -7,19 +7,29 @@ use serde::Serialize;
 pub struct Export {
     pub language_code: String,
     pub localized_keys: usize,
-    pub total_keys_to_translate: Option<i32>,
+    pub translated_status: TranslatedStatus,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub enum TranslatedStatus {
+    NotYetInXcstrings,
+    Translated(i32),
+    NoXcstringsFile,
 }
 
 pub fn read(config: Config) -> Result<Export, ConvertError> {
     let extracted = extract(&config.extract_from_docx)?;
-    let total_keys_to_translate = if let Some(xcstrings) = &config.base_xcstrings {
+    let translated_status = if let Some(xcstrings) = &config.base_xcstrings {
         // This should always exist though
         super::super::xcstrings_metadata::read::extract(xcstrings)?
             .iter()
             .find(|e| e.language_code == extracted.language_code)
-            .map(|export| export.localized_keys + export.not_localized_keys)
+            .map(|export| {
+                TranslatedStatus::Translated(export.localized_keys + export.not_localized_keys)
+            })
+            .unwrap_or(TranslatedStatus::NotYetInXcstrings)
     } else {
-        None
+        TranslatedStatus::NoXcstringsFile
     };
 
     Ok(Export {
@@ -29,6 +39,6 @@ pub fn read(config: Config) -> Result<Export, ConvertError> {
             .iter()
             .filter(|e| !e.translated.is_empty())
             .count(),
-        total_keys_to_translate,
+        translated_status,
     })
 }
