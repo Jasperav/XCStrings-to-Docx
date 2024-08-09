@@ -9,6 +9,8 @@ struct Cli {
 }
 
 fn main() {
+    env_logger::init();
+
     let cli = Cli::parse();
 
     macro_rules! handle_result {

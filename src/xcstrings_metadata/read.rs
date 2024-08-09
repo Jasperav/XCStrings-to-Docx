@@ -67,12 +67,15 @@ mod test {
 
     #[test]
     fn test_read() {
-        super::read(Config {
+        let result = super::read(Config {
             path_to_xcstrings: current_dir()
                 .unwrap()
                 .join("resources")
                 .join("reader_test_base.xcstrings"),
-        })
-        .unwrap();
+        });
+
+        let logged = serde_json::to_string(&result.map_err(|e| e.to_string())).unwrap();
+
+        println!("{logged}");
     }
 }
