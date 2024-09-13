@@ -1,0 +1,2 @@
+This crate allows you to transform .xcstrings catalog files to .docx files
+There is a macOS app available: XCStrings Catalog Docx Convert -> https://apps.apple.com/app/xcstrings-catalog-docx-convert/id6636473983 https://xcstringsdocxconvert.wordpress.com/

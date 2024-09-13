@@ -1,6 +1,6 @@
 [package]
 name = "xcstringsdocx"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 description = "Converts a .xcstrings file to .docx file for supported languages"
 license = "MIT"
