@@ -1,8 +1,8 @@
 [package]
 name = "xcstringsdocx"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
-description = "Converts a .xcstrings file to .docx file for supported languages"
+description = "Converts a .xcstrings file to .docx file for supported languages, used in macOS app: 'XCStrings Catalog Docx Converter'"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
